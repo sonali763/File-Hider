@@ -10,6 +10,9 @@ An enterprise-grade Java security application engineered to protect sensitive da
 
 Featured on [Sonali Singh's Portfolio](https://sonali763.github.io/portfolio/).
 
+📖 **Full Technical Deep-Dive & Interview Guide:** [`ARCHITECTURE_AND_INTERVIEW_GUIDE.md`](ARCHITECTURE_AND_INTERVIEW_GUIDE.md)  
+*Includes exhaustive N-tier architecture diagrams, code breakdown, enterprise use cases, AI impact analysis, and Top 15 technical interview questions with comprehensive answers.*
+
 ---
 
 ## 🎯 Executive Summary & Problem Statement
@@ -205,6 +208,21 @@ Enter the 6-digit verification code: 849201
 | **OTP Security** | Insecure `java.util.Random` (4 digits) | **`SecureRandom`** 6-digit token with demo fallback |
 | **Input Robustness** | Crashed on letters (`NumberFormatException`) | **Defensive input parsing** with automated retry loop |
 | **Git Hygiene** | Tracked `target/` binaries and `.idea/` | Clean **`.gitignore`**, zero secrets, modular configs |
+
+---
+
+## 📚 Technical Architecture, Code Guide & Interview Q&A
+
+For an in-depth exploration of the engineering principles, threat models, and architectural decisions behind this application, check out the dedicated technical guide:
+
+👉 **[Read the Full System Architecture, Code Guide & Interview Q&A Document](ARCHITECTURE_AND_INTERVIEW_GUIDE.md)**
+
+### Included in the Guide:
+1. **Full Architectural Design & Diagrams:** Detailed N-Tier component breakdown and Mermaid sequence diagrams for Authentication, File Encryption, and Decryption.
+2. **Codebase Deep-Dive:** Exhaustive functional explanations of `CryptoEngine.java`, `DataDAO.java`, `UserDAO.java`, `MyConnection.java`, `InputHelper.java`, and services.
+3. **Enterprise Use Cases:** Remote endpoint Data Loss Prevention (DLP), proprietary code sealing, ransomware defense, and regulatory compliance (GDPR/HIPAA).
+4. **Impact of AI in File Security:** Automated PII discovery, behavioral anomaly detection, adaptive zero-trust 2FA, and threat vectors from autonomous AI malware.
+5. **Top 15 Technical Interview Questions & High-Scoring Answers:** Comprehensive explanations covering AES-GCM vs CBC, IV collision math, multi-GB streaming BLOBs, CSPRNG mechanics, and ACID transaction rollbacks.
 
 ---
 
