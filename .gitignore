@@ -1,0 +1,41 @@
+# Compiled class files & build artifacts
+target/
+*.class
+
+# Package files
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# Maven
+.mvn/
+mvnw
+mvnw.cmd
+
+# IntelliJ IDEA & IDE configs
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+
+# Eclipse
+.project
+.classpath
+.settings/
+
+# VS Code
+.vscode/
+
+# Local sensitive configuration files (never commit secrets)
+config.properties
+.env
+
+# Logs and OS files
+*.log
+.DS_Store
+Thumbs.db

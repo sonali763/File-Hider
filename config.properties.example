@@ -1,0 +1,23 @@
+# ==========================================================
+# File Hider Application Configuration Template
+# Copy this file to 'config.properties' and fill in your values.
+# DO NOT commit config.properties with real passwords to Git!
+# ==========================================================
+
+# Database Configuration (MySQL)
+db.url=jdbc:mysql://localhost:3306/file_hider_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+db.username=root
+db.password=your_mysql_password_here
+
+# Security / Master Encryption Key
+# 32-character master passphrase used for deriving the AES-256 key
+security.master_key=YourSuperSecretMasterKey32Chars!
+
+# SMTP Email Configuration (Gmail App Password or custom SMTP)
+# Leave empty to enable Console/Mock OTP mode for local testing
+mail.smtp.host=smtp.gmail.com
+mail.smtp.port=465
+mail.smtp.ssl.enable=true
+mail.smtp.auth=true
+mail.from=your_email@gmail.com
+mail.password=your_16_char_app_password_here

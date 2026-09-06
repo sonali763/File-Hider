@@ -6,76 +6,103 @@ import service.GenerateOTP;
 import service.SendOTPService;
 import service.UserService;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.sql.SQLException;
 import java.util.Scanner;
 
+/**
+ * Presentation layer: Welcome screen, authentication, and user registration.
+ */
 public class Welcome {
+
+    private final Scanner scanner = new Scanner(System.in);
+
     public void welcomeScreen() {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        System.out.println("Wlcome to the app");
-        System.out.println("Press 1 to login");
-        System.out.println("Press 2 to signup");
-        System.out.println("Press 0 to exit");
-        int choice = 0;
-        try {
-            choice = Integer.parseInt(br.readLine());
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
+        System.out.println("\n========================================================");
+        System.out.println("       FILE HIDER - ENTERPRISE SECURITY VAULT           ");
+        System.out.println("  Confidentiality • Authenticated AES-256-GCM • 2FA     ");
+        System.out.println("========================================================");
+        System.out.println("  1. Login with 2FA OTP");
+        System.out.println("  2. Create a New Account");
+        System.out.println("  0. Exit Application");
+        System.out.println("========================================================");
+
+        int choice = InputHelper.readInt(scanner, "Select an option [0-2]: ", 0, 2);
+
         switch (choice) {
             case 1 -> login();
             case 2 -> signUp();
-            case 0 -> System.exit(0);
+            case 0 -> {
+                System.out.println("\n[✓] Vault session ended. Goodbye!");
+                System.exit(0);
+            }
         }
     }
 
     private void login() {
-        Scanner sc = new Scanner(System.in);
-        System.out.println("Enter email");
-        String email = sc.nextLine();
-        try {
-            if(UserDAO.isExists(email)) {
-                String genOTP = GenerateOTP.getOTP();
-                SendOTPService.sendOTP(email, genOTP);
-                System.out.println("Enter the otp");
-                String otp = sc.nextLine();
-                if(otp.equals(genOTP)) {
-                   new UserView(email).home();
+        System.out.println("\n--- USER LOGIN ---");
+        String email = InputHelper.readNonEmptyString(scanner, "Enter your registered email: ");
 
-                } else {
-                    System.out.println("Wrong OTP");
+        try {
+            if (!UserDAO.isExists(email)) {
+                System.out.println("[!] User not found with email: " + email);
+                System.out.println("    Please choose option 2 to register.");
+                return;
+            }
+
+            String genOTP = GenerateOTP.getOTP();
+            SendOTPService.sendOTP(email, genOTP);
+
+            String enteredOtp = InputHelper.readNonEmptyString(scanner, "Enter the 6-digit verification code: ");
+            if (genOTP.equals(enteredOtp.trim())) {
+                System.out.println("[✓] Authentication successful! Loading your vault...");
+                new UserView(email, scanner).home();
+            } else {
+                System.out.println("[X] Authentication failed: Invalid verification code.");
+            }
+
+        } catch (SQLException ex) {
+            System.err.println("[X] Database error during login: " + ex.getMessage());
+        }
+    }
+
+    private void signUp() {
+        System.out.println("\n--- NEW USER REGISTRATION ---");
+        String email = InputHelper.readNonEmptyString(scanner, "Enter your email address: ");
+
+        try {
+            // Verify if user already exists BEFORE generating OTP
+            if (UserDAO.isExists(email)) {
+                System.out.println("[!] An account with this email already exists.");
+                System.out.println("    Please choose option 1 from the main menu to login.");
+                return;
+            }
+
+            String name = InputHelper.readNonEmptyString(scanner, "Enter your full name: ");
+            String genOTP = GenerateOTP.getOTP();
+            SendOTPService.sendOTP(email, genOTP);
+
+            String enteredOtp = InputHelper.readNonEmptyString(scanner, "Enter the 6-digit verification code: ");
+            if (genOTP.equals(enteredOtp.trim())) {
+                User user = new User(name, email);
+                int response = UserService.saveUser(user);
+
+                switch (response) {
+                    case 1 -> {
+                        System.out.println("[✓] User registered successfully! You can now log in.");
+                    }
+                    case 0 -> {
+                        System.out.println("[!] User already exists.");
+                    }
+                    default -> {
+                        System.out.println("[X] Registration failed due to a database error.");
+                    }
                 }
             } else {
-                System.out.println("User not found");
+                System.out.println("[X] Registration failed: Invalid verification code.");
             }
+
         } catch (SQLException ex) {
-            ex.printStackTrace();
+            System.err.println("[X] Database error during registration: " + ex.getMessage());
         }
-
-    }
-    private void signUp() {
-        Scanner sc = new Scanner(System.in);
-        System.out.println("Enter name");
-        String name = sc.nextLine();
-        System.out.println("Enter email");
-        String email = sc.nextLine();
-        String genOTP = GenerateOTP.getOTP();
-        SendOTPService.sendOTP(email, genOTP);
-        System.out.println("Enter the otp");
-        String otp = sc.nextLine();
-        if(otp.equals(genOTP)) {
-            User user = new User(name, email);
-            int response = UserService.saveUser(user);
-            switch (response) {
-                case 0 -> System.out.println("User registered");
-                case 1 -> System.out.println("User already exists");
-            }
-        } else {
-            System.out.println("Wrong OTP");
-        }
-
     }
 }
